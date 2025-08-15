@@ -1,15 +1,19 @@
 "use client"
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { MessageContainer } from "../components/messages-container";
+import { Fragment } from "@/generated/prisma";
+import { ProjectHeader } from "../components/project-header";
 
 interface Props {
   projectId: string;
 }
 
 export const ProjectView = ({ projectId }: Props) => {
+  const [activateFragment, setActivateFragment] = useState<Fragment | null>(null);
+
   return (
     <div className="h-screen">
       <ResizablePanelGroup direction="horizontal">
@@ -19,7 +23,14 @@ export const ProjectView = ({ projectId }: Props) => {
           className="flex flex-col min-h-0"
         >
           <Suspense fallback={<p>Loading Project...</p>}>
-            <MessageContainer projectId={projectId} />
+            <ProjectHeader projectId={projectId} />
+          </Suspense>
+          <Suspense fallback={<p>Loading Project...</p>}>
+            <MessageContainer 
+              projectId={projectId} 
+              activateFragment={activateFragment} 
+              setActivateFragment={setActivateFragment} 
+            />
           </Suspense>
         </ResizablePanel>
         <ResizableHandle withHandle />
